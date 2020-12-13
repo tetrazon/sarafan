@@ -106,14 +106,17 @@ Vue.component('messages-list', {
         }
     }
 });
-
 var app = new Vue({
+
 
     el: '#app',
     template:
         '<div' +
-        '<div v-if="!profile">Need to authorizate through<a href="/login">Google</a></div>' +
-        '<messages-list v-else :messages="messages"/>' +
+        '<div v-if="!profile">Need to authorizate through <a href="/login">Google</a></div>' +
+            '<div v-else>' +
+                '<div>{{profile.name}}&nbsp; <a href="/logout">Logout</a> </div>' +
+                '<messages-list  :messages="messages"/>' +
+            '</div>' +
         '</div>',
     data: {
         messages: frontendData.messages,
