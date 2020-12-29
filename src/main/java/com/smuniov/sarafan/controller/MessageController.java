@@ -6,6 +6,8 @@ import com.smuniov.sarafan.domain.Views;
 import com.smuniov.sarafan.repo.MessageRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -53,4 +55,6 @@ public class MessageController {
     public void delete(@PathVariable("id") Message message){
        messageRepo.delete(message);
     }
+
+
 }
