@@ -1,19 +1,30 @@
 <template>
-    <div>
-    <div v-if="!profile">Need to authorizate through
-        <a href="/login">Google</a>
-    </div>
-    <div v-else>
-        <div>{{profile.name}}&nbsp;<a href="/logout">Logout</a>
-        </div>
-        <messages-list  :messages="messages"/>
-    </div>
-    </div>
+    <v-app>
+        <v-app-bar app>
+            <v-toolbar-title>Sarafan</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <span v-if="profile">{{profile.name}}&nbsp</span>
+            <v-btn v-if="profile" icon href="/logout">
+                <v-icon>exit_to_app</v-icon>
+            </v-btn>
+        </v-app-bar>
+        <v-content>
+            <v-container v-if="!profile">Need to authorize through
+                <a href="/login">Google</a>
+            </v-container>
+            <v-container v-if="profile">
+                <messages-list  :messages="messages"/>
+            </v-container>
+        </v-content>
+    </v-app>
 </template>
 
 <script>
     import MessagesList from 'components/messages/MessageList.vue'
-export default {
+    import {addHandler} from "./util/ws";
+    import {getIndex} from "./util/collections";
+
+    export default {
     components: {
         MessagesList
     },
@@ -22,11 +33,19 @@ export default {
             messages: frontendData.messages,
             profile: frontendData.profile
         }
-
+    },
+    created() {
+        addHandler(data => {
+            let index = getIndex(this.messages, data.id)
+            if (index > -1) {
+                this.messages.splice(index, 1, data)
+            } else {
+                this.messages.push(data)
+            }
+        })
     }
 }
 </script>
 
 <style>
-
 </style>

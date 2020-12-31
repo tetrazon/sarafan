@@ -1,20 +1,19 @@
 <template>
-    <div>
-        <input type="text" placeholder="write something" v-model="text" />  <!--v-model to connect input and text-->
-        <input type="button"  value="save" @click="save" />  <!--v-on: == @, save is the method called by pressing button-->
-    </div>
+    <v-layout row>
+        <v-text-field
+                label="new message"
+                placeholder="write something"
+                v-model="text" />  <!--v-model to connect input and text-->
+        <v-btn @click="save">  <!--v-on: == @, save is the method called by pressing button-->
+            Save
+        </v-btn>
+    </v-layout>
 </template>
 
 <script>
-    function getIndex(list, id) {
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].id === id) {
-                return i
-            }
-            return -1
-        }
-    }
-export default {
+    import {sendMessage} from "../../pages/util/ws";
+
+    export default {
     props: ['messages', 'messageAttr'],//messageAttr for editing message
     data() {
         return {
@@ -30,7 +29,10 @@ export default {
     },
     methods: {
         save() {
-            const message = { text: this.text}
+            sendMessage({id: this.id, text: this.text})
+            this.text = ''
+            this.id = ''
+         /*   const message = { text: this.text}
 
             if (this.id) {
                 this.$resource('/message{/id}').update({id: this.id}, message).then(result =>
@@ -48,7 +50,7 @@ export default {
                         this.text = ''
                     })
                 )
-            }
+            }*/
         }
     }
 }

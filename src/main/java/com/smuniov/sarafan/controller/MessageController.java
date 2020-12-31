@@ -56,5 +56,9 @@ public class MessageController {
        messageRepo.delete(message);
     }
 
-
+    @MessageMapping("/changeMessage")
+    @SendTo("/topic/activity")
+    public Message change(Message message) {
+        return messageRepo.save(message);
+    }
 }
