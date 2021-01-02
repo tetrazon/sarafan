@@ -3,7 +3,7 @@
         <v-app-bar app>
             <v-toolbar-title>Sarafan</v-toolbar-title>
             <v-spacer></v-spacer>
-            <span v-if="profile">{{profile.name}}&nbsp</span>
+            <span v-if="profile">{{ profile.name}}&nbsp</span>
             <v-btn v-if="profile" icon href="/logout">
                 <v-icon>exit_to_app</v-icon>
             </v-btn>
@@ -21,8 +21,7 @@
 
 <script>
     import MessagesList from 'components/messages/MessageList.vue'
-    import {addHandler} from "./util/ws";
-    import {getIndex} from "./util/collections";
+    import {addHandler} from "../util/ws";
 
     export default {
     components: {
@@ -36,11 +35,25 @@
     },
     created() {
         addHandler(data => {
-            let index = getIndex(this.messages, data.id)
-            if (index > -1) {
-                this.messages.splice(index, 1, data)
+            if (data.objectType === "MESSAGE") {
+                const index = this.messages.findIndex(item => item.id === data.body.id)
+                switch (data.eventType) {
+                    case 'CREATE':
+                    case 'UPDATE':
+                        if (index > -1) {
+                            this.messages.splice(index, 1, data.body)
+                        } else {
+                            this.messages.push(data.body)
+                        }
+                        break
+                    case 'REMOVE':
+                        this.messages.splice(index, 1)
+                        break
+                    default:
+                        console.error(`looks like the event type is unknown "${data.eventType}"`)
+                }
             } else {
-                this.messages.push(data)
+                console.error(`looks like the object type is unknown "${data.objectType}"`)
             }
         })
     }
